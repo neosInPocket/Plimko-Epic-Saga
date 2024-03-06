@@ -19,8 +19,8 @@ public class OrbitsSpawner : MonoBehaviour
 	[SerializeField] private float tubeRadius;
 	[SerializeField] private PlayCandy playCandy;
 	private CandyCoin currentCandy;
-	private List<OrbitRenderer> orbits;
-	private List<CandySphere> spheres;
+	public List<OrbitRenderer> orbits;
+	public List<CandySphere> spheres;
 
 	public void SetData()
 	{

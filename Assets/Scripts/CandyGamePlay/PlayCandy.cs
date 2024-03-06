@@ -13,6 +13,8 @@ public class PlayCandy : MonoBehaviour
 	[SerializeField] private float rotateSpeedMultiplier;
 	[SerializeField] private float maxScale;
 	[SerializeField] private GameObject explosion;
+	[SerializeField] private OrbitsSpawner orbitsSpawner;
+	[SerializeField] private float orbitChangeSpeed;
 	public bool IsBallEnabled
 	{
 		get => isBallEnabled;
@@ -36,11 +38,14 @@ public class PlayCandy : MonoBehaviour
 	private float maxRadius;
 	public Action CoinCollected { get; set; }
 	public Action Lose { get; set; }
+	public int CurrentOrbitIndex { get; set; }
+	public int CurrentDirectionIndex { get; set; }
 
 	private void Start()
 	{
 		EnhancedTouchSupport.Enable();
 		TouchSimulation.Enable();
+		CurrentDirectionIndex = -1;
 	}
 
 	public void SetBallData(float maxRadius)
@@ -50,7 +55,41 @@ public class PlayCandy : MonoBehaviour
 
 	private void OnBallFingerDown(Finger finger)
 	{
+		StopAllCoroutines();
 
+		CurrentOrbitIndex += CurrentDirectionIndex;
+		var orbitsLastIndex = orbitsSpawner.orbits.Count - 1;
+
+		if (CurrentOrbitIndex > orbitsLastIndex)
+		{
+			CurrentDirectionIndex *= -1;
+			CurrentOrbitIndex = orbitsLastIndex - 1;
+		}
+		else
+		{
+			if (CurrentOrbitIndex < 0)
+			{
+				CurrentDirectionIndex *= -1;
+				CurrentOrbitIndex = 1;
+			}
+		}
+
+		StartCoroutine(ChangeOrbit());
+	}
+
+	private IEnumerator ChangeOrbit()
+	{
+		float distance = Vector3.Distance(Vector3.zero, transform.position);
+		float radius = orbitsSpawner.orbits[CurrentOrbitIndex].Radius;
+
+		while ((distance < radius && CurrentDirectionIndex < 0) || (distance > radius && CurrentDirectionIndex > 0))
+		{
+			transform.position -= CurrentDirectionIndex * orbitChangeSpeed * transform.position.normalized * Time.deltaTime;
+			distance = Vector3.Distance(Vector3.zero, transform.position);
+			yield return null;
+		}
+
+		transform.position = transform.position.normalized * radius;
 	}
 
 	private void OnTriggerEnter(Collider collider)
@@ -64,6 +103,8 @@ public class PlayCandy : MonoBehaviour
 
 		if (collider.TryGetComponent<CandySphere>(out CandySphere sphere))
 		{
+			if (isInvincible) return;
+
 			Destroyed();
 			return;
 		}

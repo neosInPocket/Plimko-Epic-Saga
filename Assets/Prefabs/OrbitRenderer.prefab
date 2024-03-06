@@ -15550,3 +15550,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 15e95ed7318c3594ba7f229b68ffa2a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  tubeRadius: 0.045
