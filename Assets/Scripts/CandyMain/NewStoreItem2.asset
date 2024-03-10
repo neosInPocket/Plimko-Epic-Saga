@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 72974519309722d4f9f25ddec6f22d4f, type: 3}
   m_Name: NewStoreItem2
   m_EditorClassIdentifier: 
-  cost: 16
-  description: UPGRADE 2
+  cost: 20
+  description: gives invincibility for 3 seconds
   index: 1

@@ -46,13 +46,21 @@ public class CandyLevelStart : MonoBehaviour
 
 	private void OnEducationSystemEnd()
 	{
-		tapScreenGameStart.SetActive(true);
+		if (tapScreenGameStart != null)
+		{
+			tapScreenGameStart.SetActive(true);
+		}
+
 		Touch.onFingerDown += StartTapGame;
 	}
 
 	private void StartTapGame(Finger finger)
 	{
-		tapScreenGameStart.SetActive(false);
+		if (tapScreenGameStart != null)
+		{
+			tapScreenGameStart.SetActive(false);
+		}
+
 		Touch.onFingerDown -= StartTapGame;
 
 		orbitsSpawner.Enable(true);
@@ -72,15 +80,17 @@ public class CandyLevelStart : MonoBehaviour
 			playCandy.CoinCollected -= OnCoinCollected;
 			playCandy.Lose -= OnLose;
 
-
+			candyBattleResult.ShowBattleResult(needeCandies);
 		}
 
-
+		candiesAmount.text = $"{currentCollectedCandies}/{needeCandies}";
+		candiesImage.fillAmount = (float)currentCollectedCandies / (float)needeCandies;
 	}
 
 	private void OnLose()
 	{
 		orbitsSpawner.Enable(false);
+		candyBattleResult.ShowBattleResult(0);
 		playCandy.IsBallEnabled = false;
 		playCandy.CoinCollected -= OnCoinCollected;
 		playCandy.Lose -= OnLose;

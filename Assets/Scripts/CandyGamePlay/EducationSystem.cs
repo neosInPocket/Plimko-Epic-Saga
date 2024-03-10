@@ -100,7 +100,7 @@ public class EducationSystem : MonoBehaviour
 
 	private void ReturnPositive()
 	{
-		Touch.onFingerDown += SkipPhrase;
+		Touch.onFingerDown -= SkipPhrase;
 		EducationEnded();
 		gameObject.SetActive(false);
 	}

@@ -12,6 +12,11 @@ public class SpeedDecreasePopup : MonoBehaviour
 	[SerializeField] private TMP_Text amountText;
 	private float currentTime;
 
+	public void Enable(bool value)
+	{
+		button.interactable = value;
+	}
+
 	private void Start()
 	{
 		if (DataControls.DataObject.isUpgraded[0] == 0)

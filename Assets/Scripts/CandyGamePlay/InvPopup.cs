@@ -5,62 +5,67 @@ using UnityEngine.UI;
 
 public class InvPopup : MonoBehaviour
 {
-    [SerializeField] private PlayCandy playCandy;
-    [SerializeField] private Image fillImage;
-    [SerializeField] private Button button;
-    [SerializeField] private TMP_Text amountText;
-    private float currentTime;
+	[SerializeField] private PlayCandy playCandy;
+	[SerializeField] private Image fillImage;
+	[SerializeField] private Button button;
+	[SerializeField] private TMP_Text amountText;
+	private float currentTime;
 
-    private void Start()
-    {
-        if (DataControls.DataObject.isUpgraded[1] == 0)
-        {
-            button.interactable = false;
-            amountText.color = Color.red;
-        }
-        amountText.text = DataControls.DataObject.isUpgraded[1].ToString();
-    }
+	public void Enable(bool value)
+	{
+		button.interactable = value;
+	}
 
-    public void StartPopup()
-    {
-        fillImage.gameObject.SetActive(true);
-        fillImage.fillAmount = 1f;
-        currentTime = 0;
-        button.interactable = false;
-        DataControls.DataObject.isUpgraded[1]--;
-        amountText.text = DataControls.DataObject.isUpgraded[1].ToString();
-        DataControls.Save();
+	private void Start()
+	{
+		if (DataControls.DataObject.isUpgraded[1] == 0)
+		{
+			button.interactable = false;
+			amountText.color = Color.red;
+		}
+		amountText.text = DataControls.DataObject.isUpgraded[1].ToString();
+	}
 
-        if (DataControls.DataObject.isUpgraded[1] <= 0)
-        {
-            button.interactable = false;
-            amountText.color = Color.red;
-        }
+	public void StartPopup()
+	{
+		fillImage.gameObject.SetActive(true);
+		fillImage.fillAmount = 1f;
+		currentTime = 0;
+		button.interactable = false;
+		DataControls.DataObject.isUpgraded[1]--;
+		amountText.text = DataControls.DataObject.isUpgraded[1].ToString();
+		DataControls.Save();
 
-        StartCoroutine(StartTimer());
-    }
+		if (DataControls.DataObject.isUpgraded[1] <= 0)
+		{
+			button.interactable = false;
+			amountText.color = Color.red;
+		}
 
-    private IEnumerator StartTimer()
-    {
-        playCandy.SetInvincible(true);
+		StartCoroutine(StartTimer());
+	}
 
-        while (fillImage.fillAmount > 0)
-        {
-            currentTime += Time.deltaTime;
-            fillImage.fillAmount = 1f - currentTime / 3f;
-            yield return null;
-        }
+	private IEnumerator StartTimer()
+	{
+		playCandy.SetInvincible(true);
 
-        playCandy.SetInvincible(false);
-        fillImage.gameObject.SetActive(false);
+		while (fillImage.fillAmount > 0)
+		{
+			currentTime += Time.deltaTime;
+			fillImage.fillAmount = 1f - currentTime / 3f;
+			yield return null;
+		}
 
-        if (DataControls.DataObject.isUpgraded[1] <= 0)
-        {
-            button.interactable = false;
-        }
-        else
-        {
-            button.interactable = true;
-        }
-    }
+		playCandy.SetInvincible(false);
+		fillImage.gameObject.SetActive(false);
+
+		if (DataControls.DataObject.isUpgraded[1] <= 0)
+		{
+			button.interactable = false;
+		}
+		else
+		{
+			button.interactable = true;
+		}
+	}
 }

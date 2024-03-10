@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: NewStoreItem1
   m_EditorClassIdentifier: 
   cost: 15
-  description: UPGRADE 1
+  description: reduces the speed of candies on their orbits by 70% for 5 seconds
   index: 0

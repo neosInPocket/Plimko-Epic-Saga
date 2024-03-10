@@ -103,7 +103,7 @@ MonoBehaviour:
   - {fileID: 2100000, guid: ffc2c698c04fb674a975b5bdbc4f052d, type: 2}
   - {fileID: 2100000, guid: 5d16a7e24348a0547a8153fe1dd09841, type: 2}
   - {fileID: 2100000, guid: 32b202d0ef2bb1a4fbd552ebbe55f626, type: 2}
-  rotateSpeeds: {x: 30, y: 70}
+  rotateSpeeds: {x: 20, y: 50}
   rotateSpeedMultiplier: 100
   rigidbody: {fileID: 4737453258281044993}
   defaultScale: 3
