@@ -5,6 +5,11 @@ public class PreloadNewScene : MonoBehaviour
 {
 	public void PreloadNewSceneAction()
 	{
-		SceneManager.LoadScene("CandyGameScene");
+		SceneManager.LoadScene("HeadSideScene");
+	}
+
+	public void PreloadOldSceneAction()
+	{
+		SceneManager.LoadScene("HeadScene");
 	}
 }

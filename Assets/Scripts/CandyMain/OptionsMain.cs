@@ -25,7 +25,7 @@ public class OptionsMain : MonoBehaviour
 		}
 
 		activeSound.Set(musicState);
-		DataControls.DataObject.soundValues[0] = musicState;
+		DataControls.DataObject.volumeStatuses[0] = musicState;
 		DataControls.Save();
 	}
 
@@ -40,7 +40,7 @@ public class OptionsMain : MonoBehaviour
 			effectsState = true;
 		}
 
-		DataControls.DataObject.soundValues[1] = effectsState;
+		DataControls.DataObject.volumeStatuses[1] = effectsState;
 		DataControls.Save();
 	}
 }

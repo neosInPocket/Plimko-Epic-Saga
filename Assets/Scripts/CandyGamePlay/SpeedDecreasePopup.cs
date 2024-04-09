@@ -19,12 +19,12 @@ public class SpeedDecreasePopup : MonoBehaviour
 
 	private void Start()
 	{
-		if (DataControls.DataObject.isUpgraded[0] == 0)
+		if (DataControls.DataObject.upgradedSections[0] == 0)
 		{
 			button.interactable = false;
 			amountText.color = Color.red;
 		}
-		amountText.text = DataControls.DataObject.isUpgraded[0].ToString();
+		amountText.text = DataControls.DataObject.upgradedSections[0].ToString();
 	}
 
 	public void StartPopup()
@@ -33,11 +33,11 @@ public class SpeedDecreasePopup : MonoBehaviour
 		fillImage.fillAmount = 1f;
 		currentTime = 0;
 		button.interactable = false;
-		DataControls.DataObject.isUpgraded[0]--;
-		amountText.text = DataControls.DataObject.isUpgraded[0].ToString();
+		DataControls.DataObject.upgradedSections[0]--;
+		amountText.text = DataControls.DataObject.upgradedSections[0].ToString();
 		DataControls.Save();
 
-		if (DataControls.DataObject.isUpgraded[0] <= 0)
+		if (DataControls.DataObject.upgradedSections[0] <= 0)
 		{
 			button.interactable = false;
 			amountText.color = Color.red;
@@ -48,7 +48,7 @@ public class SpeedDecreasePopup : MonoBehaviour
 
 	private IEnumerator StartTimer()
 	{
-		orbitsSpawner.DecreaseAllSpeed(true, decreaseAmount);
+		orbitsSpawner.DecreaseVelocity(true, decreaseAmount);
 
 		while (fillImage.fillAmount > 0)
 		{
@@ -57,10 +57,10 @@ public class SpeedDecreasePopup : MonoBehaviour
 			yield return null;
 		}
 
-		orbitsSpawner.DecreaseAllSpeed(false);
+		orbitsSpawner.DecreaseVelocity(false);
 		fillImage.gameObject.SetActive(false);
 
-		if (DataControls.DataObject.isUpgraded[0] <= 0)
+		if (DataControls.DataObject.upgradedSections[0] <= 0)
 		{
 			button.interactable = false;
 		}

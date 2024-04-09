@@ -18,12 +18,12 @@ public class InvPopup : MonoBehaviour
 
 	private void Start()
 	{
-		if (DataControls.DataObject.isUpgraded[1] == 0)
+		if (DataControls.DataObject.upgradedSections[1] == 0)
 		{
 			button.interactable = false;
 			amountText.color = Color.red;
 		}
-		amountText.text = DataControls.DataObject.isUpgraded[1].ToString();
+		amountText.text = DataControls.DataObject.upgradedSections[1].ToString();
 	}
 
 	public void StartPopup()
@@ -32,11 +32,11 @@ public class InvPopup : MonoBehaviour
 		fillImage.fillAmount = 1f;
 		currentTime = 0;
 		button.interactable = false;
-		DataControls.DataObject.isUpgraded[1]--;
-		amountText.text = DataControls.DataObject.isUpgraded[1].ToString();
+		DataControls.DataObject.upgradedSections[1]--;
+		amountText.text = DataControls.DataObject.upgradedSections[1].ToString();
 		DataControls.Save();
 
-		if (DataControls.DataObject.isUpgraded[1] <= 0)
+		if (DataControls.DataObject.upgradedSections[1] <= 0)
 		{
 			button.interactable = false;
 			amountText.color = Color.red;
@@ -59,7 +59,7 @@ public class InvPopup : MonoBehaviour
 		playCandy.SetInvincible(false);
 		fillImage.gameObject.SetActive(false);
 
-		if (DataControls.DataObject.isUpgraded[1] <= 0)
+		if (DataControls.DataObject.upgradedSections[1] <= 0)
 		{
 			button.interactable = false;
 		}

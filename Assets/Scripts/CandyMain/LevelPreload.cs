@@ -7,6 +7,6 @@ public class LevelPreload : MonoBehaviour
 
 	private void Start()
 	{
-		levelPreloadText.text = "LEVEL" + " " + DataControls.DataObject.currentLevel.ToString();
+		levelPreloadText.text = "LEVEL" + " " + DataControls.DataObject.runningLevel.ToString();
 	}
 }

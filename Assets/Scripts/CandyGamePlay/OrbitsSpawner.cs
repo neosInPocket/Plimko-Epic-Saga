@@ -18,24 +18,25 @@ public class OrbitsSpawner : MonoBehaviour
 	[SerializeField] private Vector3 defaultRotation;
 	[SerializeField] private float tubeRadius;
 	[SerializeField] private PlayCandy playCandy;
-	private CandyCoin currentCandy;
-	public List<OrbitRenderer> orbits;
-	public List<CandySphere> spheres;
+	private CandyCoin runningCandy;
+	public List<OrbitRenderer> orbitsList;
+	public List<CandySphere> spheresList;
 
 	public void SetData()
 	{
-		currentCandy = startCandy;
-		orbits = new List<OrbitRenderer>();
-		spheres = new List<CandySphere>();
+		runningCandy = startCandy;
+		spheresList = new List<CandySphere>();
+		orbitsList = new List<OrbitRenderer>();
+
 
 		var screenSize = ScreenOrtho.ScreenOrthoSize();
-		float maxOrbitScale = 2 * screenSize.x * maxWidthViaScreenSize / defaultWidth;
-		float minOrbitScale = 2 * screenSize.x * minWidthViaScreenSize / defaultWidth;
-		float deltaScale = (maxOrbitScale - minOrbitScale) / (spawnCount - 1);
+		float maxOrbitScale = GetMaxOrbitScale(screenSize);
+		float minOrbitScale = GetMinOrbitScale(screenSize); ;
+		float deltaScale = GetDeltaScale(maxOrbitScale, minOrbitScale);
 		float currentScale = maxOrbitScale;
 
 		startCandy.transform.position = new Vector3(3f / 2f * currentScale - tubeRadius, 0, 0);
-		startCandy.OnCandyCollected += OnCandyCollected;
+		startCandy.OnCandyCollected += CandyCollectedOption;
 		startCandy.SetScale(currentScale);
 		playCandy.transform.position = new Vector3(0, 0, 3f / 2f * currentScale - tubeRadius);
 		playCandy.SetBallData(3f / 2f * currentScale - tubeRadius);
@@ -48,37 +49,52 @@ public class OrbitsSpawner : MonoBehaviour
 			sphere.transform.localScale = sphere.DefaultScale * currentScale * Vector3.one;
 			sphere.transform.position = new Vector3(-3f / 2f * currentScale + tubeRadius, 0, 0);
 			orbit.transform.localScale = Vector3.one * currentScale;
-			orbits.Add(orbit);
-			spheres.Add(sphere);
+			orbitsList.Add(orbit);
+			spheresList.Add(sphere);
 
 			currentScale -= deltaScale;
 		}
 	}
 
-	private void OnCandyCollected(CandyCoin candyCoin)
+	public float GetMaxOrbitScale(Vector2 screenSize)
 	{
-		candyCoin.OnCandyCollected -= OnCandyCollected;
-		var randomAngle = Random.Range(0, 2 * Mathf.PI);
-		var randomOrbit = orbits[Random.Range(0, orbits.Count)];
-		var xPosition = Mathf.Cos(randomAngle) * randomOrbit.transform.localScale.x * 3f / 2f;
-		var yPosition = Mathf.Sin(randomAngle) * randomOrbit.transform.localScale.x * 3f / 2f;
-		var newCAndyPosition = new Vector3(xPosition, 0, yPosition);
-
-		var newCandy = Instantiate(candyPrefab, newCAndyPosition, Quaternion.identity, transform);
-		newCandy.SetScale(randomOrbit.transform.localScale.x);
-		newCandy.OnCandyCollected += OnCandyCollected;
+		return 2 * screenSize.x * maxWidthViaScreenSize / defaultWidth;
 	}
 
-	public void Enable(bool enabled)
+	public float GetMinOrbitScale(Vector2 screenSize)
 	{
-		foreach (var sphere in spheres)
+		return 2 * screenSize.x * minWidthViaScreenSize / defaultWidth;
+	}
+
+	public float GetDeltaScale(float maxOrbitScale, float minOrbitScale)
+	{
+		return (maxOrbitScale - minOrbitScale) / (spawnCount - 1);
+	}
+
+	private void CandyCollectedOption(CandyCoin coin)
+	{
+		coin.OnCandyCollected -= CandyCollectedOption;
+		var angle = Random.Range(0, 2 * Mathf.PI);
+		var orb = orbitsList[Random.Range(0, orbitsList.Count)];
+		var x = Mathf.Cos(angle) * orb.transform.localScale.x * 3f / 2f;
+		var y = Mathf.Sin(angle) * orb.transform.localScale.x * 3f / 2f;
+		var newCAndyPosition = new Vector3(x, 0, y);
+
+		var newCandyObject = Instantiate(candyPrefab, newCAndyPosition, Quaternion.identity, transform);
+		newCandyObject.SetScale(orb.transform.localScale.x);
+		newCandyObject.OnCandyCollected += CandyCollectedOption;
+	}
+
+	public void EnableStatus(bool status)
+	{
+		foreach (var sphere in spheresList)
 		{
-			sphere.EnabledRotation = enabled;
+			sphere.EnabledRotation = status;
 		}
 	}
 
-	public void DecreaseAllSpeed(bool value, float multiplier = 0)
+	public void DecreaseVelocity(bool value, float multiplier = 0)
 	{
-		spheres.ForEach(x => x.DecreaseSpeed(value, multiplier));
+		spheresList.ForEach(x => x.DecreaseSpeed(value, multiplier));
 	}
 }

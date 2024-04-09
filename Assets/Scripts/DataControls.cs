@@ -53,7 +53,7 @@ public class DataControls : MonoBehaviour
 
 	private static void NewDataControls()
 	{
-		DataObject = new DataObject().GetDefaultData(DefaultDataControls);
+		DataObject = new DataObject().DefaultsAdapter(DefaultDataControls);
 		File.WriteAllText(pathToSave, JsonUtility.ToJson(DataObject));
 	}
 

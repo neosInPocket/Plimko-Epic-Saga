@@ -13,9 +13,9 @@ public class CandyLevelStart : MonoBehaviour
 	[SerializeField] private TMP_Text levelInformation;
 	[SerializeField] private EducationSystem educationSystem;
 	[SerializeField] private CandyBattleResult candyBattleResult;
-	[SerializeField] private GameObject tapScreenGameStart;
-	private int needeCandies;
-	private int currentCollectedCandies;
+	[SerializeField] private GameObject screenStart;
+	private int candiesTargetAction;
+	private int collectedCandies;
 
 	private void Awake()
 	{
@@ -23,20 +23,19 @@ public class CandyLevelStart : MonoBehaviour
 		TouchSimulation.Enable();
 	}
 
-	private void Start()
+	public virtual void Start()
 	{
-		needeCandies = DataControls.DataObject.currentLevel * 4 - 1;
+		candiesTargetAction = DataControls.DataObject.runningLevel * 4 - 1;
 
-		SetLevelInformation();
+		LevelInfoGetter();
 		orbitsSpawner.SetData();
 
-
-
-		if (DataControls.DataObject.recovery)
+		if (DataControls.DataObject.recover)
 		{
-			DataControls.DataObject.recovery = false;
+			DataControls.DataObject.recover = false;
 			DataControls.Save();
-			educationSystem.Educate(OnEducationSystemEnd);
+			educationSystem.EducateSystem();
+			educationSystem.EducationEnded += OnEducationSystemEnd;
 		}
 		else
 		{
@@ -44,62 +43,64 @@ public class CandyLevelStart : MonoBehaviour
 		}
 	}
 
-	private void OnEducationSystemEnd()
+	public virtual void OnEducationSystemEnd()
 	{
-		if (tapScreenGameStart != null)
+		educationSystem.EducationEnded -= OnEducationSystemEnd;
+
+		if (screenStart != null)
 		{
-			tapScreenGameStart.SetActive(true);
+			screenStart.SetActive(true);
 		}
 
 		Touch.onFingerDown += StartTapGame;
 	}
 
-	private void StartTapGame(Finger finger)
+	public virtual void StartTapGame(Finger finger)
 	{
-		if (tapScreenGameStart != null)
+		if (screenStart != null)
 		{
-			tapScreenGameStart.SetActive(false);
+			screenStart.SetActive(false);
 		}
 
 		Touch.onFingerDown -= StartTapGame;
 
-		orbitsSpawner.Enable(true);
+		orbitsSpawner.EnableStatus(true);
 		playCandy.IsBallEnabled = true;
-		playCandy.CoinCollected += OnCoinCollected;
-		playCandy.Lose += OnLose;
+		playCandy.CoinCollected += CoinCollectAction;
+		playCandy.Lose += LoseCondition;
 	}
 
-	private void OnCoinCollected()
+	public void CoinCollectAction()
 	{
-		currentCollectedCandies++;
+		collectedCandies++;
 
-		if (currentCollectedCandies >= needeCandies)
+		if (collectedCandies >= candiesTargetAction)
 		{
-			orbitsSpawner.Enable(false);
+			orbitsSpawner.EnableStatus(false);
 			playCandy.IsBallEnabled = false;
-			playCandy.CoinCollected -= OnCoinCollected;
-			playCandy.Lose -= OnLose;
+			playCandy.CoinCollected -= CoinCollectAction;
+			playCandy.Lose -= LoseCondition;
 
-			candyBattleResult.ShowBattleResult(needeCandies);
+			candyBattleResult.ShowBattleResult(candiesTargetAction);
 		}
 
-		candiesAmount.text = $"{currentCollectedCandies}/{needeCandies}";
-		candiesImage.fillAmount = (float)currentCollectedCandies / (float)needeCandies;
+		candiesAmount.text = $"{collectedCandies}/{candiesTargetAction}";
+		candiesImage.fillAmount = (float)collectedCandies / (float)candiesTargetAction;
 	}
 
-	private void OnLose()
+	public void LoseCondition()
 	{
-		orbitsSpawner.Enable(false);
+		orbitsSpawner.EnableStatus(false);
 		candyBattleResult.ShowBattleResult(0);
 		playCandy.IsBallEnabled = false;
-		playCandy.CoinCollected -= OnCoinCollected;
-		playCandy.Lose -= OnLose;
+		playCandy.CoinCollected -= CoinCollectAction;
+		playCandy.Lose -= LoseCondition;
 	}
 
-	public void SetLevelInformation()
+	public void LevelInfoGetter()
 	{
-		levelInformation.text = $"LEVEL {DataControls.DataObject.currentLevel}";
-		candiesAmount.text = $"{currentCollectedCandies}/{needeCandies}";
-		candiesImage.fillAmount = (float)currentCollectedCandies / (float)needeCandies;
+		levelInformation.text = $"level {DataControls.DataObject.runningLevel}";
+		candiesAmount.text = $"{collectedCandies}/{candiesTargetAction}";
+		candiesImage.fillAmount = (float)collectedCandies / (float)candiesTargetAction;
 	}
 }

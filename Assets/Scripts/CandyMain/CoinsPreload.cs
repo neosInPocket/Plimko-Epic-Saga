@@ -9,11 +9,11 @@ public class CoinsPreload : MonoBehaviour
 
 	private void Start()
 	{
-		coinsPreloadText.text = DataControls.DataObject.coinsStacks.ToString();
+		coinsPreloadText.text = DataControls.DataObject.candiesStacks.ToString();
 	}
 
 	public void Preload()
 	{
-		coinsPreloadText.text = DataControls.DataObject.coinsStacks.ToString();
+		coinsPreloadText.text = DataControls.DataObject.candiesStacks.ToString();
 	}
 }

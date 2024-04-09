@@ -12,6 +12,8 @@ public class StoreItemRenderer : MonoBehaviour
 	[SerializeField] private TMP_Text buyButtonText;
 	[SerializeField] private StoreRenderer storeRenderer;
 	[SerializeField] private TMP_Text infoText;
+	[SerializeField] private Image infoIcon;
+	[SerializeField] private Sprite upgradeIcon;
 
 	private void Start()
 	{
@@ -22,14 +24,14 @@ public class StoreItemRenderer : MonoBehaviour
 	{
 		costValue.text = storeItem.Cost.ToString();
 		buyButton.onClick.AddListener(BuyIndex);
-		infoButton.onClick.AddListener(ShowInfo);
+		infoButton.onClick.AddListener(ShowUpgradeInfo);
 	}
 
 	public void RefreshItem()
 	{
-		hasValue.text = DataControls.DataObject.isUpgraded[storeItem.Index].ToString();
+		hasValue.text = DataControls.DataObject.upgradedSections[storeItem.Index].ToString();
 
-		if (DataControls.DataObject.coinsStacks >= storeItem.Cost)
+		if (DataControls.DataObject.candiesStacks >= storeItem.Cost)
 		{
 			buyButton.interactable = true;
 			buyButtonText.color = Color.white;
@@ -45,16 +47,17 @@ public class StoreItemRenderer : MonoBehaviour
 
 	public void BuyIndex()
 	{
-		DataControls.DataObject.coinsStacks -= storeItem.Cost;
-		DataControls.DataObject.isUpgraded[storeItem.Index]++;
+		DataControls.DataObject.candiesStacks -= storeItem.Cost;
+		DataControls.DataObject.upgradedSections[storeItem.Index]++;
 		DataControls.Save();
 
 		storeRenderer.RefreshItems();
 	}
 
-	private void ShowInfo()
+	private void ShowUpgradeInfo()
 	{
-		infoText.transform.parent.gameObject.SetActive(true);
+		infoText.transform.parent.parent.gameObject.SetActive(true);
 		infoText.text = storeItem.Description;
+		infoIcon.sprite = upgradeIcon;
 	}
 }

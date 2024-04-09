@@ -58,7 +58,7 @@ public class PlayCandy : MonoBehaviour
 		StopAllCoroutines();
 
 		CurrentOrbitIndex += CurrentDirectionIndex;
-		var orbitsLastIndex = orbitsSpawner.orbits.Count - 1;
+		var orbitsLastIndex = orbitsSpawner.orbitsList.Count - 1;
 
 		if (CurrentOrbitIndex > orbitsLastIndex)
 		{
@@ -80,7 +80,7 @@ public class PlayCandy : MonoBehaviour
 	private IEnumerator ChangeOrbit()
 	{
 		float distance = Vector3.Distance(Vector3.zero, transform.position);
-		float radius = orbitsSpawner.orbits[CurrentOrbitIndex].Radius;
+		float radius = orbitsSpawner.orbitsList[CurrentOrbitIndex].Radius;
 
 		while ((distance < radius && CurrentDirectionIndex < 0) || (distance > radius && CurrentDirectionIndex > 0))
 		{

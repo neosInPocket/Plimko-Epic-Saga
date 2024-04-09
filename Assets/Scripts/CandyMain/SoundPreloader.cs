@@ -22,7 +22,7 @@ public class SoundPreloader : MonoBehaviour
 
 	private void Start()
 	{
-		Set(DataControls.DataObject.soundValues[0]);
+		Set(DataControls.DataObject.volumeStatuses[0]);
 	}
 
 	public void Set(bool volumeValue)

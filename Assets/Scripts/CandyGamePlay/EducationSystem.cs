@@ -8,93 +8,87 @@ using Touch = UnityEngine.InputSystem.EnhancedTouch.Touch;
 public class EducationSystem : MonoBehaviour
 {
 	[SerializeField] private string[] characterTextes;
-	[SerializeField] private TMP_Text characterCaptionText;
+	[SerializeField] private TMP_Text spaceText;
 	[SerializeField] private GameObject arrowPointer;
 	[SerializeField] private OrbitsSpawner orbitsSpawner;
 	[SerializeField] private float pointerAmp;
 	[SerializeField] private float pointeFreq;
-	[SerializeField] private Transform ball;
-	[SerializeField] private Transform startCoin;
-	[SerializeField] private Transform popupsPositions;
-	private Action EducationEnded;
-	private Action currentPhrase;
+	[SerializeField] private Transform player;
+	[SerializeField] private Transform candyAtStart;
+	public Action EducationEnded;
+	private Action currentSection;
 
-	public void Educate(Action educationEndAction)
+	public void EducateSystem()
 	{
-		EducationEnded = educationEndAction;
 		gameObject.SetActive(true);
 		Touch.onFingerDown += SkipPhrase;
-		currentPhrase = StartPhrase;
+		currentSection = WelcomerPhrase;
 		SkipPhrase(null);
 	}
 
 	private void SkipPhrase(Finger finger)
 	{
-		currentPhrase();
+		currentSection();
 	}
 
-	private void StartPhrase()
+	private void WelcomerPhrase()
 	{
-		characterCaptionText.text = characterTextes[0]; // welcomer
-		currentPhrase = ArrowPointer1;
+		spaceText.text = characterTextes[0];
+		currentSection = BallPointer;
 	}
 
-	private void ArrowPointer1()
+	private void BallPointer()
 	{
 		arrowPointer.gameObject.SetActive(true);
 
-		characterCaptionText.text = characterTextes[1]; // ball pointer
-		currentPhrase = ArrowPointer2;
-		StartCoroutine(Pointer(ball.transform.position, false));
+		spaceText.text = characterTextes[1];
+		currentSection = SpherePointer;
+		StartCoroutine(SetPointerActive(player.transform.position, false));
 	}
 
-	private void ArrowPointer2()
+	private void SpherePointer()
 	{
 		StopAllCoroutines();
-		characterCaptionText.text = characterTextes[2]; // sphere pointer
-		currentPhrase = ArrowPointer3;
+		spaceText.text = characterTextes[2];
+		currentSection = CandyPointer;
 
-		var position = new Vector3(-orbitsSpawner.orbits[0].Radius, 0, 0);
-		StartCoroutine(Pointer(position, false));
+		var position = new Vector3(-orbitsSpawner.orbitsList[0].Radius, 0, 0);
+		StartCoroutine(SetPointerActive(position, false));
 	}
 
-	private void ArrowPointer3()
+	private void CandyPointer()
 	{
 		StopAllCoroutines();
 		arrowPointer.gameObject.SetActive(true);
-		characterCaptionText.text = characterTextes[3]; // coin pointer
-		currentPhrase = ArrowPointer4;
+		spaceText.text = characterTextes[3];
+		currentSection = ProgressPointer;
 
-		var position = startCoin.transform.position;
-		StartCoroutine(Pointer(position, false));
+		var position = candyAtStart.transform.position;
+		StartCoroutine(SetPointerActive(position, false));
 	}
 
-	private void ArrowPointer4()
+	private void ProgressPointer()
 	{
 		StopAllCoroutines();
 		arrowPointer.gameObject.SetActive(false);
 
-		characterCaptionText.text = characterTextes[4]; // progress pointer
-		currentPhrase = ArrowPointer5;
+		spaceText.text = characterTextes[4];
+		currentSection = PopupPointers;
 	}
 
-	private void ArrowPointer5()
+	private void PopupPointers()
 	{
 		StopAllCoroutines();
-		arrowPointer.gameObject.SetActive(true);
-		characterCaptionText.text = characterTextes[5]; // popup pointers
-		currentPhrase = EndPointer;
-
-		var position = popupsPositions.transform.position;
-		StartCoroutine(Pointer(position, true));
+		spaceText.text = characterTextes[5];
+		currentSection = EndPointer;
 	}
 
 	private void EndPointer()
 	{
 		StopAllCoroutines();
 
-		characterCaptionText.text = characterTextes[6];
-		currentPhrase = ReturnPositive;
+		spaceText.text = characterTextes[6];
+		currentSection = ReturnPositive;
 		arrowPointer.gameObject.SetActive(false);
 	}
 
@@ -105,7 +99,7 @@ public class EducationSystem : MonoBehaviour
 		gameObject.SetActive(false);
 	}
 
-	private IEnumerator Pointer(Vector3 position, bool flipY)
+	private IEnumerator SetPointerActive(Vector3 position, bool flipY)
 	{
 		arrowPointer.transform.position = position;
 		if (flipY)
